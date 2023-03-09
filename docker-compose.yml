@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  mongo:
+    container_name: mongo-todolist
+    image: bitnami/mongodb:5.0.14
+    environment:
+      - MONGODB_ROOT_USERNAME=root
+      - MONGODB_ROOT_PASSWORD=123456
+      - MONGODB_USERNAME=user
+      - MONGODB_PASSWORD=123456
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./.mount/database/db:/bitnami/mongodb
+
+  node:
+    container_name: node-todolist
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    volumes:
+      - ./:/app
+    command: npm run dev
